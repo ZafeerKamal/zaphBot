@@ -19,6 +19,7 @@ client.on('ready', () => {
 
 
 client.on('message', (message) => {
+    var user;
     console.log(message.content);
 
     if (message.content === 'test') {
@@ -44,6 +45,9 @@ client.on('message', (message) => {
     } else if (message.content === '<@!220968762256392193>') {
         message.channel.send(`What's bitcoin saying?`)
 
+    } else if (message.content === 'time out ') {
+        message.channel.send('WHO IS THE GERB?')
+        
     }
 
 
