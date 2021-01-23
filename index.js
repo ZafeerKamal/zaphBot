@@ -21,10 +21,6 @@ client.on('ready', () => {
 client.on('message', (message) => {
     console.log(message.content);
 
-   
-    
-    
-
     if (message.content === 'test') {
         message.channel.send('hehe');
 
@@ -38,6 +34,16 @@ client.on('message', (message) => {
     
     } else if (message.content === 'tagtest') {
         message.reply(`hehehe`)
+    
+    } else if (message.content === '<@!772349371647918080>') {
+        message.reply(`hehehe`)
+
+    } else if (message.content === '<@!186554849196769280>') {
+        message.reply(`gerb`)
+
+    } else if (message.content === '<@!220968762256392193>') {
+        message.channel.send(`What's bitcoin saying?`)
+
     }
 
 
