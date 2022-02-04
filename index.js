@@ -8,9 +8,14 @@ const { connect } = require('http2');
 
 var today = new Date();
 
-messages = [
+LeagueMessages = [
     "Stop playing league of legends",
     "Take a shower"
+];
+
+DyingLightMessages = [
+    "Take a shower",
+    "Cringe Game"
 ];
 
 client.on('ready', () => {
@@ -30,13 +35,17 @@ client.on('presenceUpdate', (oldPresence, newPresence) => {
     activities.forEach(element => {
         eventName = element.name.toLowerCase();
         if (eventName == "league of legends") {
-            let x = Math.floor(Math.random() * messages.length);
-            let msg = messages[x];
+            let x = Math.floor(Math.random() * LeagueMessages.length);
+            let msg = LeagueMessages[x];
             userId.send(`${msg}`);
+        } else if (eventName.includes("dying light") ){
+            let x = Math.floor(Math.random() * DyingLightMessages.length);
+            let msg = DyingLightMessages[x];
+            userId.send(`${msg}`);
+            
         }
     });
 });
-
 
 
 client.on('message', (message) => {
