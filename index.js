@@ -1,22 +1,10 @@
-const Discord = require('discord.js') // Requires the discord.js module
-const client = new Discord.Client() // Created a discord client
+const Discord = require('discord.js');
+const client = new Discord.Client();
 
-const { prefix, token } = require('./config.json'); // Takes in info from the config.json file
-const command = require('./command.js')
+const { prefix, token } = require('./config.json');
+const command = require('./command.js');
 const path = require('path');
 const { connect } = require('http2');
-
-var today = new Date();
-
-LeagueMessages = [
-    "Stop playing league of legends",
-    "Take a shower"
-];
-
-DyingLightMessages = [
-    "Take a shower",
-    "Cringe Game"
-];
 
 client.on('ready', () => {
     console.log('The client is ready!')
@@ -25,94 +13,83 @@ client.on('ready', () => {
         message.channel.send('Test Passed')
     })
 
-
-
 })
-
-client.on('presenceUpdate', (oldPresence, newPresence) => {
-    userId = newPresence.user;
-    activities = newPresence.activities
-    activities.forEach(element => {
-        eventName = element.name.toLowerCase();
-        if (eventName == "league of legends") {
-            let x = Math.floor(Math.random() * LeagueMessages.length);
-            let msg = LeagueMessages[x];
-            userId.send(`${msg}`);
-        } else if (eventName.includes("dying light") ){
-            let x = Math.floor(Math.random() * DyingLightMessages.length);
-            let msg = DyingLightMessages[x];
-            userId.send(`${msg}`);
-            
-        }
-    });
-});
 
 
 client.on('message', (message) => {
-
     if (message.author.bot) return;
+    user = message.author;
 
-    var user;
-    console.log(`[${message.author.tag}]: ${message.content}`);
+    console.log(`[${message.author.tag}]: ${message.content}`)
 
-
-    //if (message.content === 'among us' ) {
-    if (message.content.includes("among us")) {
-        message.channel.send({ files: ["./Assets/imp.jpg"] });
-        const { voice } = message.member
-        if (!voice.channelID) {
-            message.reply('You must be in a voice channel')
-            return
-        }
-        voice.channel.join().then((connection) => {
-            connection.play(path.join(__dirname, 'Assets/AU.mp3'))
-        })
+    if (message.content.includes("val") || message.content.includes("sal")) {
+        message.channel.send("bro please, its " + currentTime());  
     }
 
-    if (message.content.includes("run") || message.content.includes("val")) {
-        let x = Math.floor(Math.random() * 6);
 
-        switch (x) {
-            case 0:
-                message.channel.send("no valorant allowed", { files: ["./Assets/val.png"] })
-                break;
-            case 1:
-                message.channel.send("no valorant allowed", { files: ["./Assets/val2.png"] })
-                break;
-            case 2:
-                message.channel.send("no valorant allowed", { files: ["./Assets/val3.png"] })
-                break;
-            case 3:
-                message.channel.send("no valorant allowed", { files: ["./Assets/val4.png"] })
-                break;
-            case 4:
-                message.channel.send("no valorant allowed", { files: ["./Assets/val5.png"] })
-                break;
-            case 5:
-                message.channel.send("no valorant allowed", { files: ["./Assets/val6.png"] })
-                break;
+   if (message.content.includes("<@&")) {
+        key = message.mentions.roles.keys();
+        RoleId = key.next().value;
+        RolesIdArr = [];
+        RolesNameArr = [];
+
+        for (i = 0; RoleId != null; i++) {
+            RolesIdArr[i] = RoleId;
+            //console.log(RoleId); 
+            RoleId = key.next().value;
         }
+        //console.log(RolesIdArr);
+        for (i = 0 ; i < RolesIdArr.length ; i++) {
+            RolesNameArr[i] = message.mentions.roles.get(RolesIdArr[i]).name;
+        }
+        //console.log(RolesNameArr);
 
+        saloRoleCheck = false;
+        RolesNameArr.forEach(i => {
+            if (i == "salo") {
+                saloRoleCheck = true;
+            }
+        });
+        if (saloRoleCheck == true) {
+            message.channel.send("bro please, its " + currentTime()); 
+        }
     }
-
 });
 
 client.login(token)
 
-function getMention(mention) {
-
-    if (!mention) {
-        return;
-    }
+function getMentionId(mention) {
+    if (!mention) return;
 
     if (mention.startsWith('<@') && mention.endsWith('>')) {
-
         mention = mention.slice(2, -1);
-
         if (mention.startsWith('!')) {
             mention = mention.slice(1);
         }
-
         return client.users.cache.get(mention);
     }
+}
+
+function getRoleId(role) {
+    if (!role) return;
+    if (role.startsWith('<@&') && role.endsWith('>')) {
+        role = role.slice(3, -1);
+    }
+    return role;
+
+}
+
+function currentTime() {
+    date = new Date();
+    hour = date.getHours();
+    AmOrPm = "am";
+    mins = date.getMinutes();
+    if (hour > 12) {
+        hour -=  12;
+        AmOrPm = "pm";
+    }
+    if (mins < 10) {
+        mins = "0" + mins;
+    }
+    return (hour + ":" + mins + AmOrPm);
 }
