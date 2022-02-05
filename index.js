@@ -1,20 +1,34 @@
 const Discord = require('discord.js');
 const client = new Discord.Client();
 
-const { prefix, token } = require('./config.json');
+const { prefix, token, steamKey, mostafaSteamId } = require('./config.json');
 const command = require('./command.js');
 const path = require('path');
 const { connect } = require('http2');
 
+const steam = require('steam-js-api');
+steam.setKey(steamKey);
+
 client.on('ready', () => {
     console.log('The client is ready!')
 
-    command(client, ['test', 'test1', 'test3'], (message) => {
-        message.channel.send('Test Passed')
+    command(client, ["status", "stat", "st"], (message) => {
+        if (message.content.includes("mos")) {
+            steam.getPlayerSummaries(mostafaSteamId).then(result => {
+                state = result.data.players[mostafaSteamId].state;
+                if (state == 0) {
+                    message.reply("Mostafa is offline");
+                } else if (state == 1) {
+                    message.reply("Mostafa is online");
+                } else if (state == 3) {
+                    message.reply("Mostafa left his computer on. Low chance he is online"); 
+                } else {
+                    message.reply("Mostafa is being gay. I cannot figure out if he's online or offline"); 
+                }
+            }).catch(console.error);
+        }
     })
-
 })
-
 
 client.on('message', (message) => {
     if (message.author.bot) return;
@@ -25,7 +39,6 @@ client.on('message', (message) => {
     if (message.content.includes("val") || message.content.includes("sal")) {
         message.channel.send("bro please, its " + currentTime());  
     }
-
 
    if (message.content.includes("<@&")) {
         key = message.mentions.roles.keys();

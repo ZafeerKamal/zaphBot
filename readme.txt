@@ -11,5 +11,9 @@ To run this app for development, assuming you have the config.json file containi
 
     This will deploy the discord bot.
 
-The config file should contain 
-    "token": "DISCORD-BOT-TOKEN-HERE";
+Config File: 
+{
+    "token": "TOKEN-HERE",
+    "prefix": "PREFIX-HERE",
+    "steamKey": "STEAM-KEY-HERE"
+}
