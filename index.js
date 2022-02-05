@@ -13,19 +13,24 @@ client.on('ready', () => {
     console.log('The client is ready!')
 
     command(client, ["status", "stat", "st"], (message) => {
-        if (message.content.includes("mos")) {
+        if (message.content.includes.toLowerCase("mos")) {
             steam.getPlayerSummaries(mostafaSteamId).then(result => {
                 state = result.data.players[mostafaSteamId].state;
                 if (state == 0) {
-                    message.reply("Mostafa is offline");
+                    message.channel.send("Mostafa is offline");
                 } else if (state == 1) {
-                    message.reply("Mostafa is online");
+                    message.channel.send("Mostafa is online");
                 } else if (state == 3) {
-                    message.reply("Mostafa left his computer on. Low chance he is online"); 
+                    message.channel.send("Mostafa left his computer on. Low chance he is online"); 
                 } else {
-                    message.reply("Mostafa is being gay. I cannot figure out if he's online or offline"); 
+                    message.channel.send("Mostafa is being gay. I cannot figure out if he's online or offline"); 
                 }
             }).catch(console.error);
+
+        } else if (message.content.includes("hash")) {
+            message.channel.send("Being Different");
+        } else if (message.content.includes("wil")) {
+            message.channel.send("not getting bitches");
         }
     })
 })
@@ -83,7 +88,6 @@ function getRoleId(role) {
         role = role.slice(3, -1);
     }
     return role;
-
 }
 
 function currentTime() {
@@ -104,7 +108,7 @@ function currentTime() {
 function RoleChecker (arr, role) {
     found = false; 
     arr.forEach(i => {
-        if (i == role) {
+        if (i.toLowerCase() == role) {
             found = true;
         }
     });
