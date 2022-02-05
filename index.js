@@ -44,13 +44,7 @@ client.on('message', (message) => {
         }
         //console.log(RolesNameArr);
 
-        saloRoleCheck = false;
-        RolesNameArr.forEach(i => {
-            if (i == "salo") {
-                saloRoleCheck = true;
-            }
-        });
-        if (saloRoleCheck == true) {
+        if (RoleChecker(RolesNameArr, "salo")) {
             message.channel.send("bro please, its " + currentTime()); 
         }
     }
@@ -92,4 +86,15 @@ function currentTime() {
         mins = "0" + mins;
     }
     return (hour + ":" + mins + AmOrPm);
+}
+
+function RoleChecker (arr, role) {
+    found = false; 
+    arr.forEach(i => {
+        if (i == role) {
+            found = true;
+        }
+    });
+    if (found == true) return true;
+    return false;
 }
