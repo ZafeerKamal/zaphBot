@@ -1,38 +1,15 @@
 const Discord = require('discord.js');
 const client = new Discord.Client();
-
 const { prefix, token, steamKey, mostafaSteamId } = require('./config.json');
 const command = require('./command.js');
-const path = require('path');
-const { connect } = require('http2');
-
+// const path = require('path');
+// const { connect } = require('http2');
 const steam = require('steam-js-api');
 steam.setKey(steamKey);
+const commandHandler = require('./commandHandler.js');
 
 client.on('ready', () => {
     console.log('The client is ready!')
-
-    command(client, ["status", "stat", "st"], (message) => {
-        if (message.content.includes.toLowerCase("mos")) {
-            steam.getPlayerSummaries(mostafaSteamId).then(result => {
-                state = result.data.players[mostafaSteamId].state;
-                if (state == 0) {
-                    message.channel.send("Mostafa is offline");
-                } else if (state == 1) {
-                    message.channel.send("Mostafa is online");
-                } else if (state == 3) {
-                    message.channel.send("Mostafa left his computer on. Low chance he is online"); 
-                } else {
-                    message.channel.send("Mostafa is being gay. I cannot figure out if he's online or offline"); 
-                }
-            }).catch(console.error);
-
-        } else if (message.content.includes("hash")) {
-            message.channel.send("Being Different");
-        } else if (message.content.includes("wil")) {
-            message.channel.send("not getting bitches");
-        }
-    })
 })
 
 client.on('message', (message) => {
@@ -41,7 +18,11 @@ client.on('message', (message) => {
 
     console.log(`[${message.author.tag}]: ${message.content}`)
 
-    if (message.content.includes("val") || message.content.includes("sal")) {
+    if (message.content.startsWith(`${prefix}`)) {
+        commandHandler(client, steam, message);
+    }
+    
+    if (message.content.match(/val/i) || message.content.match(/sal/i)) {
         message.channel.send("bro please, its " + currentTime());  
     }
 
