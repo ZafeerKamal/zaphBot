@@ -22,9 +22,9 @@ client.on('message', (message) => {
         commandHandler(client, steam, message);
     }
     
-    if (message.content.match(/val/i) || message.content.match(/sal/i)) {
-        message.channel.send("bro please, its " + currentTime());  
-    }
+    // if (message.content.match(/val/i) || message.content.match(/sal/i)) {
+    //     message.channel.send("bro please, its " + currentTime());  
+    // }
 
    if (message.content.includes("<@&")) {
         key = message.mentions.roles.keys();
@@ -44,7 +44,7 @@ client.on('message', (message) => {
         //console.log(RolesNameArr);
 
         if (RoleChecker(RolesNameArr, "salo")) {
-            message.channel.send("bro please, its " + currentTime()); 
+            message.channel.send("sad"); 
         }
     }
 });
