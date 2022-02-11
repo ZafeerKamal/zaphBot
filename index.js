@@ -1,12 +1,13 @@
 const Discord = require('discord.js');
-const client = new Discord.Client();
 const { prefix, token, steamKey, mostafaSteamId } = require('./config.json');
 const command = require('./command.js');
-// const path = require('path');
-// const { connect } = require('http2');
 const steam = require('steam-js-api');
-steam.setKey(steamKey);
 const commandHandler = require('./commandHandler.js');
+const client = new Discord.Client();
+
+steam.setKey(steamKey);
+date = new Date();
+
 
 client.on('ready', () => {
     console.log('The client is ready!')
@@ -22,9 +23,11 @@ client.on('message', (message) => {
         commandHandler(client, steam, message);
     }
     
-    // if (message.content.match(/val/i) || message.content.match(/sal/i)) {
-    //     message.channel.send("bro please, its " + currentTime());  
-    // }
+    if (message.content.match(/val/i) || message.content.match(/sal/i)) {
+        replies = ["sad", "just sad honestly" , ":pensive:", "please bro, enough", ":worried:", ":skull:", ":frowning:"];
+        rand = Math.floor(Math.random() * replies.length);
+        message.channel.send(replies[rand]);  
+    }
 
    if (message.content.includes("<@&")) {
         key = message.mentions.roles.keys();
@@ -44,7 +47,9 @@ client.on('message', (message) => {
         //console.log(RolesNameArr);
 
         if (RoleChecker(RolesNameArr, "salo")) {
-            message.channel.send("sad"); 
+            replies = ["sad", "just sad honestly" , ":pensive:", "please bro, enough", ":worried:", ":skull:", ":frowning:"];
+            rand = Math.floor(Math.random() * replies.length);
+            message.channel.send(replies[rand]); 
         }
     }
 });
@@ -72,7 +77,7 @@ function getRoleId(role) {
 }
 
 function currentTime() {
-    date = new Date();
+
     hour = date.getHours();
     AmOrPm = "am";
     mins = date.getMinutes();

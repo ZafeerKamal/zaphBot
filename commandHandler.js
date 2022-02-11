@@ -1,5 +1,4 @@
 const { prefix, token, steamKey, mostafaSteamId } = require('./config.json');
-// const steam = require ('./index.js');
 
 module.exports = (client, steam, message) => {
     content = message.content;
