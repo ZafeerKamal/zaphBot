@@ -7,27 +7,34 @@ const client = new Discord.Client();
 
 steam.setKey(steamKey);
 date = new Date();
-
+mosState = 0;
 
 client.on('ready', () => {
-    console.log('The client is ready!')
+    console.log('The client is ready!');
+
+    zaphOnlyChannel = client.channels.cache.find(channel => channel.name == "zaphbot-updates");
+    zaphOnlyChannel.send("Zaphbot is online!");
 })
 
 client.on('message', (message) => {
     if (message.author.bot) return;
     user = message.author;
+    console.log(`[${message.author.tag}]: ${message.content}`);
 
-    console.log(`[${message.author.tag}]: ${message.content}`)
+    updaterChannel = client.channels.cache.find(channel => channel.name == "mostafa-updates");
+    var intervalStatus = setInterval(statusFunction, 1000 * 5, updaterChannel);
 
     if (message.content.startsWith(`${prefix}`)) {
         commandHandler(client, steam, message);
     }
     
-    if (message.content.match(/val/i) || message.content.match(/sal/i)) {
-        replies = ["sad", "just sad honestly" , ":pensive:", "please bro, enough", ":worried:", ":skull:", ":frowning:"];
-        rand = Math.floor(Math.random() * replies.length);
-        message.channel.send(replies[rand]);  
-    }
+    // ----------------------- Valorant Bullyer ------------------------
+
+    // if (message.content.match(/val/i) || message.content.match(/sal/i)) {
+    //     replies = ["sad", "just sad honestly" , ":pensive:", "please bro, enough", ":worried:", ":skull:", ":frowning:"];
+    //     rand = Math.floor(Math.random() * replies.length);
+    //     message.channel.send(replies[rand]);  
+    // }
 
    if (message.content.includes("<@&")) {
         key = message.mentions.roles.keys();
@@ -46,11 +53,13 @@ client.on('message', (message) => {
         }
         //console.log(RolesNameArr);
 
-        if (RoleChecker(RolesNameArr, "salo")) {
-            replies = ["sad", "just sad honestly" , ":pensive:", "please bro, enough", ":worried:", ":skull:", ":frowning:"];
-            rand = Math.floor(Math.random() * replies.length);
-            message.channel.send(replies[rand]); 
-        }
+        // ------------- Valorant Bullyer Part 2 -----------------------------------
+
+        // if (RoleChecker(RolesNameArr, "salo")) {
+        //     replies = ["sad", "just sad honestly" , ":pensive:", "please bro, enough", ":worried:", ":skull:", ":frowning:"];
+        //     rand = Math.floor(Math.random() * replies.length);
+        //     message.channel.send(replies[rand]); 
+        // }
     }
 });
 
@@ -58,7 +67,6 @@ client.login(token)
 
 function getMentionId(mention) {
     if (!mention) return;
-
     if (mention.startsWith('<@') && mention.endsWith('>')) {
         mention = mention.slice(2, -1);
         if (mention.startsWith('!')) {
@@ -77,7 +85,6 @@ function getRoleId(role) {
 }
 
 function currentTime() {
-
     hour = date.getHours();
     AmOrPm = "am";
     mins = date.getMinutes();
@@ -100,4 +107,22 @@ function RoleChecker (arr, role) {
     });
     if (found == true) return true;
     return false;
+}
+
+function statusFunction(channel) {
+    steam.getPlayerSummaries(mostafaSteamId).then(result => {
+        state = result.data.players[mostafaSteamId].state;   
+        if (mosState != state) {
+            if (state == 0) {
+                channel.send("Mostafa is offline");
+            } else if (state == 1) {
+                channel.send("Mostafa is online");
+            } else if (state == 3) {
+                channel.send("Mostafa left his computer on. Low chance he is online"); 
+            } else {
+                channel.send("Cannot figure out if he's online or offline. Check logs"); 
+            }
+            mosState = state;
+        }
+    })
 }
