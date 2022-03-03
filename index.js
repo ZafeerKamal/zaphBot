@@ -17,9 +17,12 @@ client.on('ready', () => {
 })
 
 client.on('message', (message) => {
-    if (message.author.bot) return;
     user = message.author;
     console.log(`[${message.author.tag}]: ${message.content}`);
+
+    if (message.channel.type === 'news') {
+        message.crosspost();
+    }
 
     updaterChannel = client.channels.cache.find(channel => channel.name == "mostafa-updates");
     var intervalStatus = setInterval(statusFunction, 1000 * 5, updaterChannel);
