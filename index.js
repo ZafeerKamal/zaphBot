@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const { prefix, token, steamKey, mostafaSteamId } = require('./config.json');
+const { prefix, token, steamKey, mostafaSteamId, debugID } = require('./config.json');
 const command = require('./command.js');
 const steam = require('steam-js-api');
 const commandHandler = require('./commandHandler.js');
@@ -12,8 +12,6 @@ mosState = 0;
 client.on('ready', () => {
     console.log('The client is ready!');
 
-    zaphOnlyChannel = client.channels.cache.find(channel => channel.name == "zaphbot-updates");
-    zaphOnlyChannel.send("Zaphbot is online!");
 })
 
 client.on('message', (message) => {
@@ -21,11 +19,12 @@ client.on('message', (message) => {
     console.log(`[${message.author.tag}]: ${message.content}`);
 
     if (message.channel.type === 'news') {
-        message.crosspost();
+        message.crosspost()
+            .catch(console.error);
     }
 
     updaterChannel = client.channels.cache.find(channel => channel.name == "mostafa-updates");
-    var intervalStatus = setInterval(statusFunction, 1000 * 5, updaterChannel);
+    var intervalStatus = setInterval(statusFunction, 1000 * 60, updaterChannel);
 
     if (message.content.startsWith(`${prefix}`)) {
         commandHandler(client, steam, message);
@@ -113,8 +112,14 @@ function RoleChecker (arr, role) {
 }
 
 function statusFunction(channel) {
+    console.log("Reached statusFunction");
+    console.log(`State: ${state}`);
     steam.getPlayerSummaries(mostafaSteamId).then(result => {
-        state = result.data.players[mostafaSteamId].state;   
+        state = result.data.players[mostafaSteamId].state;
+        
+        console.log(`State: ${state}`);
+        console.log(`mosState: ${mosState}`);
+        
         if (mosState != state) {
             if (state == 0) {
                 channel.send("Mostafa is offline");
