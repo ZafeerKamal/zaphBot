@@ -2,7 +2,6 @@ To run this app for development, assuming you have the config.json file containi
 
     In a terminal install nodemon:
         run: npm install nodemon -g
-    This installs nodemon globally.
     Once nodemon is installed,
         run: nodemon index.js
 
@@ -10,10 +9,3 @@ To run this app for development, assuming you have the config.json file containi
         node index.js
 
     This will deploy the discord bot.
-
-Config File: 
-{
-    "token": "TOKEN-HERE",
-    "prefix": "PREFIX-HERE",
-    "steamKey": "STEAM-KEY-HERE"
-}
