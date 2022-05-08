@@ -1,17 +1,19 @@
 const Discord = require('discord.js');
-const { prefix, token, steamKey, mostafaSteamId, debugID } = require('./config.json');
 const command = require('./command.js');
 const steam = require('steam-js-api');
 const commandHandler = require('./commandHandler.js');
 const client = new Discord.Client();
 
-steam.setKey(steamKey);
+const config = require('./config.json');
+steam.setKey(config.steamKey);
 date = new Date();
-mosState = 0;
 
 client.on('ready', () => {
     console.log('The client is ready!');
 
+    var statusUpdaterChannel = client.channels.cache.find(channel => channel.name == "mostafa-status-updates");
+    var intervalStatus = setInterval(currentStatusFunction, 1000 * 30, statusUpdaterChannel);
+    
 })
 
 client.on('message', (message) => {
@@ -19,26 +21,24 @@ client.on('message', (message) => {
     console.log(`[${message.author.tag}]: ${message.content}`);
 
     if (message.channel.type === 'news') {
-        message.crosspost()
-            .catch(console.error);
+        message.crosspost().catch(console.error);
     }
 
-    updaterChannel = client.channels.cache.find(channel => channel.name == "mostafa-updates");
-    var intervalStatus = setInterval(statusFunction, 1000 * 60, updaterChannel);
 
-    if (message.content.startsWith(`${prefix}`)) {
+
+    if (message.content.startsWith(`${config.prefix}`)) {
         commandHandler(client, steam, message);
     }
-    
-    // ----------------------- Valorant Bullyer ------------------------
+});
 
-    // if (message.content.match(/val/i) || message.content.match(/sal/i)) {
-    //     replies = ["sad", "just sad honestly" , ":pensive:", "please bro, enough", ":worried:", ":skull:", ":frowning:"];
-    //     rand = Math.floor(Math.random() * replies.length);
-    //     message.channel.send(replies[rand]);  
-    // }
+client.login(config.token)
 
-   if (message.content.includes("<@&")) {
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////// Functions /////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function getRoleArray(message) {
+    if (message.content.includes("<@&")) {
         key = message.mentions.roles.keys();
         RoleId = key.next().value;
         RolesIdArr = [];
@@ -54,18 +54,9 @@ client.on('message', (message) => {
             RolesNameArr[i] = message.mentions.roles.get(RolesIdArr[i]).name;
         }
         //console.log(RolesNameArr);
-
-        // ------------- Valorant Bullyer Part 2 -----------------------------------
-
-        // if (RoleChecker(RolesNameArr, "salo")) {
-        //     replies = ["sad", "just sad honestly" , ":pensive:", "please bro, enough", ":worried:", ":skull:", ":frowning:"];
-        //     rand = Math.floor(Math.random() * replies.length);
-        //     message.channel.send(replies[rand]); 
-        // }
+        return(RolesNameArr);
     }
-});
-
-client.login(token)
+}
 
 function getMentionId(mention) {
     if (!mention) return;
@@ -111,26 +102,31 @@ function RoleChecker (arr, role) {
     return false;
 }
 
-function statusFunction(channel) {
+function currentStatusFunction(channel) {
     console.log("Reached statusFunction");
-    console.log(`State: ${state}`);
-    steam.getPlayerSummaries(mostafaSteamId).then(result => {
-        state = result.data.players[mostafaSteamId].state;
+    storedState = config.mostafaState;
+
+    steam.getPlayerSummaries(config.mostafaId).then(result => {
+        var currState = result.data.players[config.mostafaId].state;
         
-        console.log(`State: ${state}`);
-        console.log(`mosState: ${mosState}`);
+        console.log(`storedState: ${storedState}`);
+        console.log(`currState: ${currState}`);
         
-        if (mosState != state) {
-            if (state == 0) {
+        if (storedState != currState) {
+            // 0 = offline
+            // 1 = online
+            // 3 = away
+            // else = ?
+            if (currState == 0) {
                 channel.send("Mostafa is offline");
-            } else if (state == 1) {
+            } else if (currState == 1) {
                 channel.send("Mostafa is online");
-            } else if (state == 3) {
-                channel.send("Mostafa left his computer on. Low chance he is online"); 
-            } else {
-                channel.send("Cannot figure out if he's online or offline. Check logs"); 
+            // } else if (currState == 3) {
+            //     channel.send("Mostafa left his computer on. Low chance he is online"); 
+            // } else {
+            //     channel.send("Cannot figure out if he's online or offline. Check logs"); 
             }
-            mosState = state;
+            config.mostafaState = currState;
         }
     })
 }
