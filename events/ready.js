@@ -29,7 +29,7 @@ function currentStatusFunction(channel) {
             } else if (currState == 1) {
                 channel.send("Mostafa is online");
             }
-            config.ducksState = currState;
+            config.storedState = currState;
         }
     })
 }
