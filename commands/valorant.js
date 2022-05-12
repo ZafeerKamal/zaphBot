@@ -8,7 +8,7 @@ var currentPlayers = 0;
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('valorant')
-        .setDescription('Valorant 5-Stack'),
+        .setDescription('Valorant 5-Stack V0.3'),
 
     async execute(interaction) {
 
@@ -16,11 +16,11 @@ module.exports = {
             .setColor('#BF40BF')
             .setTitle('Current Valorant 5-stack:')
             .addFields(
-                { name: "Player 1", value: `${player[0]}` },
-                { name: "Player 2", value: `${player[1]}` },
-                { name: "Player 3", value: `${player[2]}` },
-                { name: "Player 4", value: `${player[3]}` },
-                { name: "Player 5", value: `${player[4]}` }
+                { name: "Player 1", value: `USE /VAL ONE AT A TIME` },
+                { name: "Player 2", value: `If the bot bugs out` },
+                { name: "Player 3", value: `because you did /val twice` },
+                { name: "Player 4", value: `click "Cancel 5-Stack"` },
+                { name: "Player 5", value: `It should fix it` }
             );
 
         actionRow = new MessageActionRow().addComponents(
@@ -37,18 +37,20 @@ module.exports = {
 
         const collector = interaction.channel.createMessageComponentCollector();
 
-        collector.on('collect', async i => {
+        collector.on('collect', async collectedInteraction => {
+            // console.log(interaction);
             if (currentPlayers == 0) {
-                updateAtZero(i);
+                updateAtZero(collectedInteraction, collector);
             } else if (currentPlayers == 1) {
-                updateAtOne(i);
+                updateAtOne(collectedInteraction, collector);
             } else if (currentPlayers == 2) {
-                updateAtTwo(i)
+                updateAtTwo(collectedInteraction, collector);
             } else if (currentPlayers == 3) {
-                updateAtThree(i)
+                updateAtThree(collectedInteraction, collector);
             } else if (currentPlayers == 4) {
-                updateAtFour(i)
+                updateAtFour(collectedInteraction, collector);
             }
+
 
         });
 
@@ -56,15 +58,14 @@ module.exports = {
             console.log(`Collected ${collected.size} items`)
         });
 
-
-        await interaction.reply({ content: 'Only use this command once. Im fragile', embeds: [stackEmbed], components: [actionRow] });
+        await interaction.reply({ content: '@zapphire if this command breaks to help fix the bugs!', embeds: [stackEmbed], components: [actionRow] });
     },
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////// 0 Players ////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
-async function updateAtZero(i) {
+async function updateAtZero(i, collector) {
     if (i.customId === 'join') {
         player[0] = i.user;
         actionRow = new MessageActionRow().addComponents(
@@ -97,14 +98,18 @@ async function updateAtZero(i) {
         currentPlayers++;
         await i.update({ content: `${i.user} Joined`, embeds: [stackEmbed], components: [actionRow] });
     } else if (i.customId === 'cancel') {
-        await i.update({ content: `${i.user.username} Cancelled the 5-stack`, embeds: [], components: [] });
+        await i.update({ content: `${i.user.username} Cancelled the 5-stack`, embeds: [], components: [] })
+            .catch(console.error);
+        collector.stop();
+        currentPlayers = 0;
+        player = ['\u200B', '\u200B', '\u200B', '\u200B', '\u200B'];
     }
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////// 1 Player /////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
-async function updateAtOne(i) {
+async function updateAtOne(i, collector) {
     if (i.customId === 'join') {
         player[1] = i.user;
         stackEmbed = new MessageEmbed()
@@ -116,44 +121,48 @@ async function updateAtOne(i) {
                 { name: "Player 3", value: `${player[2]}` },
                 { name: "Player 4", value: `${player[3]}` },
                 { name: "Player 5", value: `${player[4]}` }
-            ); 
+            );
         currentPlayers++;
-        await i.update({ content: `${i.user} Joined`, embeds: [stackEmbed], components: [actionRow] });
+        await i.update({ content: `${i.user} Joined`, embeds: [stackEmbed], components: [actionRow] }).catch(console.error);
     } else if (i.customId === 'leave') {
         player[0] = '\u200B';
         stackEmbed = new MessageEmbed()
             .setColor('#BF40BF')
             .setTitle('Current Valorant 5-stack:')
             .addFields(
-                { name: "Player 1", value: `${player[0]}` },
-                { name: "Player 2", value: `${player[1]}` },
-                { name: "Player 3", value: `${player[2]}` },
-                { name: "Player 4", value: `${player[3]}` },
-                { name: "Player 5", value: `${player[4]}` }
+                { name: "Player 1", value: `USE /VAL ONE AT A TIME` },
+                { name: "Player 2", value: `If the bot bugs out` },
+                { name: "Player 3", value: `because you did /val twice` },
+                { name: "Player 4", value: `click "Cancel 5-Stack"` },
+                { name: "Player 5", value: `It should fix it` }
             );
-            actionRow = new MessageActionRow().addComponents(
-                new MessageButton()
-                    .setCustomId('join')
-                    .setLabel('Join!')
-                    .setStyle('PRIMARY')
-            ).addComponents(
-                new MessageButton()
-                    .setCustomId('cancel')
-                    .setLabel('Cancel 5-Stack')
-                    .setStyle('DANGER')
-            );
+        actionRow = new MessageActionRow().addComponents(
+            new MessageButton()
+                .setCustomId('join')
+                .setLabel('Join!')
+                .setStyle('PRIMARY')
+        ).addComponents(
+            new MessageButton()
+                .setCustomId('cancel')
+                .setLabel('Cancel 5-Stack')
+                .setStyle('DANGER')
+        );
         currentPlayers--;
-        await i.update({ content: `${i.user} Left`, embeds: [stackEmbed], components: [actionRow] });
+        await i.update({ content: `${i.user} Left`, embeds: [stackEmbed], components: [actionRow] }).catch(console.error);
     }
     else if (i.customId === 'cancel') {
-        await i.update({ content: `${i.user.username} Cancelled the 5-stack`, embeds: [], components: [] });
+        await i.update({ content: `${i.user.username} Cancelled the 5-stack`, embeds: [], components: [] })
+            .catch(console.error);
+        collector.stop();
+        currentPlayers = 0;
+        player = ['\u200B', '\u200B', '\u200B', '\u200B', '\u200B'];
     }
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////// 2 Players ////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
-async function updateAtTwo(i) {
+async function updateAtTwo(i, collector) {
     if (i.customId === 'join') {
         player[2] = i.user;
         stackEmbed = new MessageEmbed()
@@ -165,9 +174,9 @@ async function updateAtTwo(i) {
                 { name: "Player 3", value: `${player[2]}` },
                 { name: "Player 4", value: `${player[3]}` },
                 { name: "Player 5", value: `${player[4]}` }
-            ); 
+            );
         currentPlayers++;
-        await i.update({ content: `${i.user} Joined`, embeds: [stackEmbed], components: [actionRow] });
+        await i.update({ content: `${i.user} Joined`, embeds: [stackEmbed], components: [actionRow] }).catch(console.error);
     } else if (i.customId === 'leave') {
         player[1] = '\u200B';
         stackEmbed = new MessageEmbed()
@@ -181,17 +190,21 @@ async function updateAtTwo(i) {
                 { name: "Player 5", value: `${player[4]}` }
             );
         currentPlayers--;
-        await i.update({ content: `${i.user} Left`, embeds: [stackEmbed], components: [actionRow] });
+        await i.update({ content: `${i.user} Left`, embeds: [stackEmbed], components: [actionRow] }).catch(console.error);
     }
     else if (i.customId === 'cancel') {
-        await i.update({ content: `${i.user.username} Cancelled the 5-stack`, embeds: [], components: [] });
+        await i.update({ content: `${i.user.username} Cancelled the 5-stack`, embeds: [], components: [] })
+            .catch(console.error);
+        collector.stop();
+        currentPlayers = 0;
+        player = ['\u200B', '\u200B', '\u200B', '\u200B', '\u200B'];
     }
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////// 3 Players ////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
-async function updateAtThree(i) {
+async function updateAtThree(i, collector) {
     if (i.customId === 'join') {
         player[3] = i.user;
         stackEmbed = new MessageEmbed()
@@ -203,9 +216,9 @@ async function updateAtThree(i) {
                 { name: "Player 3", value: `${player[2]}` },
                 { name: "Player 4", value: `${player[3]}` },
                 { name: "Player 5", value: `${player[4]}` }
-            ); 
+            );
         currentPlayers++;
-        await i.update({ content: `${i.user} Joined`, embeds: [stackEmbed], components: [actionRow] });
+        await i.update({ content: `${i.user} Joined`, embeds: [stackEmbed], components: [actionRow] }).catch(console.error);
     } else if (i.customId === 'leave') {
         player[2] = '\u200B';
         stackEmbed = new MessageEmbed()
@@ -219,21 +232,25 @@ async function updateAtThree(i) {
                 { name: "Player 5", value: `${player[4]}` }
             );
         currentPlayers--;
-        await i.update({ content: `${i.user} Left`, embeds: [stackEmbed], components: [actionRow] });
+        await i.update({ content: `${i.user} Left`, embeds: [stackEmbed], components: [actionRow] }).catch(console.error);
     }
     else if (i.customId === 'cancel') {
-        await i.update({ content: `${i.user.username} Cancelled the 5-stack`, embeds: [], components: [] });
+        await i.update({ content: `${i.user.username} Cancelled the 5-stack`, embeds: [], components: [] })
+            .catch(console.error);
+        collector.stop();
+        currentPlayers = 0;
+        player = ['\u200B', '\u200B', '\u200B', '\u200B', '\u200B'];
     }
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////// 4 Players ////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
-async function updateAtFour(i) {
+async function updateAtFour(i, collector) {
     if (i.customId === 'join') {
         player[4] = i.user;
         stackEmbed = new MessageEmbed()
-            .setColor('#BF40BF')
+            .setColor('#00FF00')
             .setTitle('Current Valorant 5-stack:')
             .addFields(
                 { name: "Player 1", value: `${player[0]}` },
@@ -241,9 +258,12 @@ async function updateAtFour(i) {
                 { name: "Player 3", value: `${player[2]}` },
                 { name: "Player 4", value: `${player[3]}` },
                 { name: "Player 5", value: `${player[4]}` }
-            );  
+            );
         currentPlayers++;
-        await i.update({ content: `${i.user} Joined`, embeds: [stackEmbed], components: [] });
+        await i.update({ content: `Time to shine! ${player[0]}, ${player[1]}, ${player[2]}, ${player[3]}, ${player[4]}`, embeds: [stackEmbed], components: [] }).catch(console.error);
+        collector.stop();
+        currentPlayers = 0;
+        player = ['\u200B', '\u200B', '\u200B', '\u200B', '\u200B'];
     } else if (i.customId === 'leave') {
         player[3] = '\u200B';
         stackEmbed = new MessageEmbed()
@@ -257,27 +277,13 @@ async function updateAtFour(i) {
                 { name: "Player 5", value: `${player[4]}` }
             );
         currentPlayers--;
-        await i.update({ content: `${i.user} Left`, embeds: [stackEmbed], components: [actionRow] });
+        await i.update({ content: `${i.user} Left`, embeds: [stackEmbed], components: [actionRow] }).catch(console.error);
     }
     else if (i.customId === 'cancel') {
-        await i.update({ content: `${i.user.username} Cancelled the 5-stack`, embeds: [], components: [] });
+        await i.update({ content: `${i.user.username} Cancelled the 5-stack`, embeds: [], components: [] })
+            .catch(console.error);
+        collector.stop();
+        currentPlayers = 0;
+        player = ['\u200B', '\u200B', '\u200B', '\u200B', '\u200B'];
     }
 }
-
-
-actionRow = new MessageActionRow().addComponents(
-    new MessageButton()
-        .setCustomId('join')
-        .setLabel('Join!')
-        .setStyle('PRIMARY')
-).addComponents(
-    new MessageButton()
-        .setCustomId('leave')
-        .setLabel('Leave')
-        .setStyle('SECONDARY')
-).addComponents(
-    new MessageButton()
-        .setCustomId('cancel')
-        .setLabel('Cancel 5-Stack')
-        .setStyle('DANGER')
-);

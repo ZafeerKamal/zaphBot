@@ -48,11 +48,17 @@ for (const file of commandFiles) {
 
 const rest = new REST({ version: '9' }).setToken(config.token);
 
-rest.put(Routes.applicationGuildCommands(config.clientId, config.guildId), { body: commands })
-    .then(() => console.log('Successfully registered application commands.'))
+rest.put(Routes.applicationGuildCommands(config.clientId, config.RCFguildId), { body: commands })
+    .then(() => console.log('Successfully registered application Guild commands.'))
     .catch(console.error);
+
+// rest.put(Routes.applicationCommands(config.clientId), { body: commands })
+//     .then(() => console.log('Successfully registered application Global commands.'))
+//     .catch(console.error);
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////// Start //////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 client.login(config.token);
+
+// const twitter_api_v2_1 = require('twitter-api-v2');

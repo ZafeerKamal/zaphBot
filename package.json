@@ -2,8 +2,12 @@
   "dependencies": {
     "@discordjs/builders": "^0.13.0",
     "@discordjs/rest": "^0.4.1",
+    "@discordjs/voice": "^0.9.0",
     "discord-api-types": "^0.32.1",
     "discord.js": "^13.6.0",
-    "steam-js-api": "^1.1.0"
+    "ffmpeg-static": "^4.4.1",
+    "steam-js-api": "^1.1.0",
+    "twitter-api-v2": "^1.12.0",
+    "ytdl-core": "^4.11.0"
   }
 }
