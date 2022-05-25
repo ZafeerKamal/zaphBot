@@ -51,8 +51,9 @@ async function playerJoined(interaction, collector) {
     if (currentPlayers == 0) {
         buttonsFull = refreshButtonsFull();
     } else if (currentPlayers == 4) {
+        fullEmbed = embedFullStack();
         await interaction.update({ content: `Time to shine! ${player[0]}, ${player[1]}, ${player[2]}, ${player[3]}, ${player[4]}`, 
-            embeds: [embed], components: [] })
+            embeds: [fullEmbed], components: [] })
             .catch(console.error);
         collector.stop();
         currentPlayers = 0;
@@ -138,6 +139,20 @@ function refreshEmbed() {
     stackEmbed = new MessageEmbed()
         .setColor('#BF40BF')
         .setTitle('Current Valorant 5-stack:')
+        .addFields(
+            { name: "Player 1", value: `${player[0]}` },
+            { name: "Player 2", value: `${player[1]}` },
+            { name: "Player 3", value: `${player[2]}` },
+            { name: "Player 4", value: `${player[3]}` },
+            { name: "Player 5", value: `${player[4]}` }
+        );
+    return stackEmbed;
+}
+
+function embedFullStack() {
+    stackEmbed = new MessageEmbed()
+        .setColor('#00FF00')
+        .setTitle('The 5-stack:')
         .addFields(
             { name: "Player 1", value: `${player[0]}` },
             { name: "Player 2", value: `${player[1]}` },
