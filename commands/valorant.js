@@ -42,7 +42,9 @@ module.exports = {
 async function playerJoined(interaction, collector) {
     for (let i = 0; i < 4; i++) {
         if (player[i] == interaction.user) {
-            await interaction.reply({ content: "Brother, you're already on the list!", ephemeral: true });
+            await interaction.reply({ content: "Brother, you're already on the list!", ephemeral: true })
+                .then(console.log(`${interaction.user} tried to join twice`))
+                .catch(console.error);
             return;
         }
     }
