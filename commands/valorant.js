@@ -31,7 +31,8 @@ module.exports = {
             console.log(`Collected ${collected.size} items`)
         });
 
-        await interaction.reply({ content: '@zapphire if this command breaks to help fix the bugs!', embeds: [embed], components: [btn] });
+        await interaction.reply({ content: '@zapphire if this command breaks to help fix the bugs!', embeds: [embed], components: [btn] })
+            .catch(console.error);
     },
 };
 
