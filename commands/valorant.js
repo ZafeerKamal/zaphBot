@@ -8,7 +8,7 @@ var currentPlayers = 0;
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('valorant')
-        .setDescription('Valorant 5-Stack V0.5'),
+        .setDescription('Valorant 5-Stack V1'),
 
     async execute(interaction) {
 
