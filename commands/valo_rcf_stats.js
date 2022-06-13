@@ -6,20 +6,31 @@ const val = require('../functions/valorantStats.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
-    .setName('valorant_stats')
-    .setDescription('In-game stats for Valorant')
+    .setName('valo_rcf_stats')
+    .setDescription('Valorant stats for RCf')
     .addStringOption(option => 
-        option.setName('player_id')
-        .setDescription("The player's account name")
-        .setRequired(true))
-    .addStringOption(option => 
-        option.setName('player_tag')
-            .setDescription("The player's account TAG (ex. #NA1)")
-            .setRequired(true)),
-
+        option.setName('player')
+        .setDescription("The RCF member to get stats for")
+        .setRequired(true)
+        .addChoices(
+            { name: 'zapphire', value: 'ZAF'},
+            { name: 'yukki', value: 'MAS'},
+            { name: 'The Avenger', value: 'TA'},
+            { name: 'Valentissimo', value: 'OS'},
+            { name: 'Yazuø', value: 'SA'},
+            { name: 'jaheek0', value: 'AZ'},
+            { name: 'fighting4ster', value: 'MOS'},
+            { name: 'Takenshen', value: 'TW'},
+            { name: 'tauqir2', value: 'MT'},
+            { name: 'Jetsly', value: 'A'}
+        )),
     async execute(interaction) {
-        var id = interaction.options.getString('player_id');
-        var tag = interaction.options.getString('player_tag');
+        var option = interaction.options.getString('player');
+
+        var id = config.val[option].id;
+        var tag = config.val[option].tag;
+        
+
         var player = await val.getPlayer(id, tag).catch(console.error);
         var rank = await val.getMMR(id, tag).catch(console.error);
 

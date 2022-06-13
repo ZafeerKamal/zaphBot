@@ -49,7 +49,7 @@ for (const file of commandFiles) {
 const rest = new REST({ version: '9' }).setToken(config.token);
 
 //Guild Commands
-rest.put(Routes.applicationGuildCommands(config.clientId, config.RCFguildId), { body: commands })
+rest.put(Routes.applicationGuildCommands(config.clientId, config.zaphGuildId), { body: commands })
     .then(() => console.log('Successfully registered application Guild commands.'))
     .catch(console.error);
 
