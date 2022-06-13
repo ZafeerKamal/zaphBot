@@ -3,10 +3,12 @@
     "@discordjs/builders": "^0.13.0",
     "@discordjs/rest": "^0.4.1",
     "@discordjs/voice": "^0.9.0",
+    "axios": "^0.27.2",
     "discord-api-types": "^0.32.1",
     "discord.js": "^13.6.0",
     "ffmpeg-static": "^4.4.1",
     "steam-js-api": "^1.1.0",
+    "unofficial-valorant-api": "^1.0.4",
     "ytdl-core": "^4.11.0"
   }
 }
