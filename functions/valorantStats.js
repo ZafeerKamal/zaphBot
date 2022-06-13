@@ -7,7 +7,7 @@ async function getPlayer(playerID, playerTag) {
 }
 
 async function getMMR(playerID, playerTag) {
-    var data = await val.getMMR('v2', 'na', playerID, playerTag);
+    var data = await val.getMMR('v2', 'na', playerID, playerTag).catch(console.error);
     return data
 }
 
