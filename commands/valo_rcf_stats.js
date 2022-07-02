@@ -35,11 +35,11 @@ module.exports = {
         var rank = await val.getMMR(id, tag);
 
         if (player.status == 404) {
-            await interaction.editReply({ content: 'Not a player', ephemeral: true });
+            await interaction.editReply({ content: 'Not a player', ephemeral: true }).catch(console.error);
         } else if (player.status == 400) {
-            await interaction.editReply({ content: 'Valorant API is down', ephemeral: true });
+            await interaction.editReply({ content: 'Valorant API is down', ephemeral: true }.catch(console.error));
         } else if (player.status != 200) {
-            await interaction.editReply({ content: "Something is down/broken. Ping zapphire", ephemeral: true});
+            await interaction.editReply({ content: "Something is down/broken. Ping zapphire", ephemeral: true}).catch(console.error);
         }
              
         msgEmbed = RefreshEmbed(player, rank);
@@ -64,6 +64,5 @@ function RefreshEmbed(player, rank) {
         .addField('Current RR', `${rank.data.current_data.ranking_in_tier}/100`, true)
         .addField('Last Updated', `${player.data.last_update}`, true)
         .setImage(playedCard)
-        // .setURL(`https://tracker.gg/valorant/profile/riot/${player.data.name}%23${player.data.tag}/overview`);
     return stackEmbed;
 }

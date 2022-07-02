@@ -7,7 +7,8 @@ function currentStatusFunction(channel) {
     var storedState = config.storedState;
 
     steam.getPlayerSummaries(ID).then(result => {
-        var currState = result.data.players[ID].state;
+        
+        var currState = result?.data?.players[ID].state;
 
         if (storedState != currState ) {
             // 0 = offline
