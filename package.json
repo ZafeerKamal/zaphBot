@@ -8,6 +8,8 @@
     "discord.js": "^13.6.0",
     "ffmpeg-static": "^4.4.1",
     "needle": "^3.1.0",
+    "nodemon": "^2.0.20",
+    "openai": "^3.1.0",
     "steam-js-api": "^1.1.0",
     "unofficial-valorant-api": "^1.0.4",
     "ytdl-core": "^4.11.0"
