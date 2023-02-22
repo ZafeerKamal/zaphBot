@@ -17,22 +17,24 @@ module.exports = {
 
         const collector = interaction.channel.createMessageComponentCollector();
 
-        collector.on('collect', async collectedInteraction => {
-            if (collectedInteraction.customId === 'join') {
-                playerJoined(collectedInteraction, collector)
-            } else if (collectedInteraction.customId === 'cancel') {
-                playerCancelled(collectedInteraction, collector)
-            } else if (collectedInteraction.customId === 'leave') {
-                playerLeft(collectedInteraction);
-            }
-        });
+        try{
+            collector.on('collect', async collectedInteraction => {
+                if (collectedInteraction.customId === 'join') {
+                    playerJoined(collectedInteraction, collector)
+                } else if (collectedInteraction.customId === 'cancel') {
+                    playerCancelled(collectedInteraction, collector)
+                } else if (collectedInteraction.customId === 'leave') {
+                    playerLeft(collectedInteraction);
+                }
+            });
+        } catch(error) {
+            console.error(error)
+        }
+        
 
         collector.on('end', collected => {
             console.log(`Collected ${collected.size} items`)
         });
-
-        await interaction.reply({ content: '@zapphire if this command breaks to help fix the bugs!', embeds: [embed], components: [btn] })
-            .catch(console.error);
     },
 };
 
@@ -43,7 +45,7 @@ module.exports = {
 async function playerJoined(interaction, collector) {
     for (let i = 0; i < 4; i++) {
         if (player[i] == interaction.user) {
-            await interaction.reply({ content: "Brother, you're already on the list!", ephemeral: true })
+            await interaction.reply({ content: "You're already on the list!", ephemeral: true })
                 .then(console.log(`${interaction.user} tried to join twice`))
                 .catch(console.error);
             return;

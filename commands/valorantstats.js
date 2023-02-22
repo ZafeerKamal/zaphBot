@@ -27,8 +27,6 @@ module.exports = {
             await interaction.reply({ content: 'Not a player', ephemeral: true });
         } else if (player.status == 400) {
             await interaction.reply({ content: 'Valorant API is down', ephemeral: true });
-        } else if (player.status != 200) {
-            await interaction.reply({ content: "Something is down/broken. Ping zapphire", ephemeral: true});
         }
              
         msgEmbed = embed(player, rank);

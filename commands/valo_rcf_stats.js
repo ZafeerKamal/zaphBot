@@ -13,16 +13,16 @@ module.exports = {
         .setDescription("The RCF member to get stats for")
         .setRequired(true)
         .addChoices(
-            { name: 'zapphire', value: 'ZAF'},
-            { name: 'yukki', value: 'MAS'},
-            { name: 'The Avenger', value: 'TA'},
-            { name: 'Valentissimo', value: 'OS'},
-            { name: 'Yazuø', value: 'SA'},
-            { name: 'jaheek0', value: 'AZ'},
-            { name: 'fighting4ster', value: 'MOS'},
-            { name: 'Takenshen', value: 'TW'},
-            { name: 'tauqir2', value: 'MT'},
-            { name: 'Jetsly', value: 'A'}
+            { name: config.val.ZAF.id, value: 'ZAF'},
+            { name: config.val.MAS.id, value: 'MAS'},
+            { name: config.val.TA.id, value: 'TA'},
+            { name: config.val.OS.id, value: 'OS'},
+            { name: config.val.SA.id, value: 'SA'},
+            { name: config.val.AZ.id, value: 'AZ'},
+            { name: config.val.MOS.id, value: 'MOS'},
+            { name: config.val.TW.id, value: 'TW'},
+            { name: config.val.MT.id, value: 'MT'},
+            { name: config.val.A.id, value: 'A'}
         )),
     async execute(interaction) {
         var option = interaction.options.getString('player');
@@ -30,7 +30,7 @@ module.exports = {
         var id = config.val[option].id;
         var tag = config.val[option].tag;
         
-        await interaction.deferReply();
+        await interaction.deferReply().catch(console.error);
         var player = await val.getPlayer(id, tag);
         var rank = await val.getMMR(id, tag);
 
@@ -63,6 +63,6 @@ function RefreshEmbed(player, rank) {
         .addField('RR change', `${rank.data.current_data.mmr_change_to_last_game}`, true)
         .addField('Current RR', `${rank.data.current_data.ranking_in_tier}/100`, true)
         .addField('Last Updated', `${player.data.last_update}`, true)
-        .setImage(playedCard)
+        .setImage(playedCard);
     return stackEmbed;
 }
