@@ -1,7 +1,8 @@
+const { Events } = require('discord.js');
 const config = require('../config.json');
 
 module.exports = {
-    name: 'error',
+    name: Events.Error,
     execute(clientError) {
         console.log(clientError);
     },

@@ -3,7 +3,7 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('delete')
-        .setDescription('Deletes set amount of messages that are newer than two weeks')
+        .setDescription('Deletes the specified amount of messages')
         .addIntegerOption(option =>
             option.setName('number')
                 .setDescription('Number of messages to delete')

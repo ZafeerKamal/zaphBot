@@ -1,9 +1,9 @@
-const config = require('../config.json');
+const { Events } = require('discord.js');
 
 module.exports = {
-    name: 'ready',
-    once: true,
-    async execute(client) {
-        console.log('The client is ready!'); 
-    },
+	name: Events.ClientReady,
+	once: true,
+	execute(client) {
+		console.log(`Ready! Logged in as ${client.user.tag}`);
+	},
 };
