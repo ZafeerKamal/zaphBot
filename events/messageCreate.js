@@ -1,13 +1,10 @@
-const config = require('../config.json');
+const { Events } = require('discord.js');
 
 module.exports = {
-    name: 'messageCreate',
+    name: Events.MessageCreate,
     execute(message) {
         
-        if (config.debug) console.log(`[${message.author.tag}]: ${message.content}`);
+        console.log(`[${message.author.tag}]: ${message.content}`);
 
-        if (message.channel.type === 'GUILD_NEWS') {
-            message.crosspost().catch(console.error);
-        }
     }
 }
