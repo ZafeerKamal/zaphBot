@@ -1,10 +1,10 @@
-const { Events } = require('discord.js');
+const { Events, time } = require('discord.js');
 
 module.exports = {
     name: Events.MessageCreate,
     execute(message) {
-        
-        console.log(`[${message.author.tag}]: ${message.content}`);
+        const timestamp = new Date().toLocaleString();
+        console.log(`[${timestamp}] [${message.author.tag}]: ${message.content}`);
 
     }
 }

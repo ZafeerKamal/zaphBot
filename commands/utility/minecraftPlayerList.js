@@ -6,36 +6,43 @@ module.exports = {
         .setName('playerlist')
         .setDescription('Displays the current players on the Minecraft Server'),
     async execute(interaction) {
-        
-        const rcon = await Rcon.connect({
-            host: "3.97.180.236",
-            port: 25575,
-            password: 'zaphhomesteadworld'
-        });
+        await interaction.deferReply();
 
-        console.log('minecraftPlayerList.js: Connected to Minecraft Server ');
+        try {
+            let initialEmbed = initialEmbedCreate();
+            await interaction.editReply({ embeds: [initialEmbed] });
 
-        let res = await rcon.send('/list');
-        const match = res.match(/There are \d+ of a max of \d+ players online: (.*)/);
-        let players = [];
-        if (match && match[1].trim() !== '') {
-            players = match[1].split(', ').map(p => p.trim());
+            const rcon = await Rcon.connect({
+                host: "3.97.180.236",
+                port: 25575,
+                password: 'zaphhomesteadworld'
+            });
+            console.log('minecraftPlayerList.js: Connected to Minecraft Server ');
+
+            let res = await rcon.send('/list');
+            const match = res.match(/There are \d+ of a max of \d+ players online: (.*)/);
+            let players = [];
+            if (match && match[1].trim() !== '') {
+                players = match[1].split(', ').map(p => p.trim());
+            }
+            console.log(`minecraftPlayerList.js: Match: ${res}`);
+            console.log(`minecraftPlayerList.js: Players: ${players}`);
+
+            let msgEmbed = playerList(players);
+            await interaction.editReply({ embeds: [msgEmbed] });
+
+            rcon.end();
+        } catch (err) {
+            console.error('minecraftPlayerList.js Error: ', err);
+            console.log('minecraftPlayerList.js: Could not connect to Minecraft Server ');
+            let failEmbed = failedEmbed();
+            await interaction.editReply({ embeds: [failEmbed] });
         }
-        console.log(`minecraftPlayerList.js: Match: ${res}`);
-        console.log(`minecraftPlayerList.js: Players: ${players}`);
-
-        let msgEmbed = playerList(players);
-        interaction.reply({
-            embeds: [msgEmbed]
-        });
-
-        rcon.end();
-        
     },
 };
 
 function playerList(players) {
-    embed = new EmbedBuilder()
+    let embed = new EmbedBuilder()
     .setColor(0x0099FF)
 
     if (players.length == 0) {
@@ -50,5 +57,21 @@ function playerList(players) {
         }
     }
 
+    return embed;
+}
+
+function failedEmbed() {
+    let embed = new EmbedBuilder()
+        .setColor(0x720707)
+        .setTitle('Failed to connect to Minecraft Server.')
+        .setDescription('Check if instance is running (/serverstatus). Use /startserver if instance is stopped');
+    return embed;
+}
+
+function initialEmbedCreate() {
+    let embed = new EmbedBuilder()
+        .setColor(0x0099FF)
+        .setTitle('Connecting to Minecraft server')
+        .setDescription('Check if instance is running (/serverstatus). Use /startserver if instance is stopped');
     return embed;
 }

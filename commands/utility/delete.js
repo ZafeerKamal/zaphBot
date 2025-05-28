@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
+const { SlashCommandBuilder, MessageFlags } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -13,6 +13,6 @@ module.exports = {
     async execute(interaction) {
         var numberToDelete = interaction.options.getInteger('number');
         interaction.channel.bulkDelete(numberToDelete, true);
-        return interaction.reply(`Deleted ${numberToDelete} messages`);
+        await interaction.reply({content: `Deleted ${numberToDelete} messages`, flags: MessageFlags.Ephemeral})
     },
 };
