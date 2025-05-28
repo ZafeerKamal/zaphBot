@@ -1,6 +1,6 @@
 const { Rcon } = require('rcon-client');
 const { rcfMcChannelId, zaphMcChannelId } = require('./config.json');
-const { EmbedBuilder, embedLength } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 
 let checked_players = [];
 

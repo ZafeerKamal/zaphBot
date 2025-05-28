@@ -30,7 +30,7 @@ const rest = new REST().setToken(token);
 
 		// Update Guild Commands
 		const data = await rest.put(
-			Routes.applicationGuildCommands(clientId, RCFguildId),
+			Routes.applicationGuildCommands(clientId, zaphGuildId),
 			{ body: commands },
 		);
 
