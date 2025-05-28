@@ -4,6 +4,8 @@ const fs = require('node:fs');
 const path = require('node:path');
 const fivestack = require('./commands/utility/fivestack');
 
+let guildId = RCFguildId; //Server (Guild) to update commands for
+
 const commands = [];
 const foldersPath = path.join(__dirname, 'commands');
 const commandFolders = fs.readdirSync(foldersPath);
@@ -30,7 +32,7 @@ const rest = new REST().setToken(token);
 
 		// Update Guild Commands
 		const data = await rest.put(
-			Routes.applicationGuildCommands(clientId, RCFguildId),
+			Routes.applicationGuildCommands(clientId, guildId),
 			{ body: commands },
 		);
 

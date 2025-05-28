@@ -1,6 +1,6 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { EC2Client, StartInstancesCommand } = require("@aws-sdk/client-ec2");
-const { awsAccessKeyId, awsSecretAccessKey } = require('./../../config.json');
+const { awsAccessKeyId, awsSecretAccessKey, awsInstanceId } = require('./../../config.json');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -16,10 +16,8 @@ module.exports = {
             }
         });
 
-        const instanceId = 'i-0a54720750336d978';
-        
         try {
-            const command = new StartInstancesCommand({ InstanceIds: [instanceId] });
+            const command = new StartInstancesCommand({ InstanceIds: [awsInstanceId] });
             const resp = await ec2client.send(command);
             const state = resp.StartingInstances[0].CurrentState.Name;
             console.log(`startserver.js: State: ${state}`);
