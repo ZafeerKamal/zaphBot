@@ -10,21 +10,20 @@ module.exports = {
         let channel;
         
         try {
-            channel = await discordClient.channels.fetch(rcfMcChannelId);
+            channel = await discordClient.channels.fetch(zaphMcChannelId);
         } catch (err) {
             console.error('Failed to fetch channel', err);
         }
 
-        const rcon = await Rcon.connect({
-            host: "3.97.180.236",
-            port: 25575,
-            password: 'zaphhomesteadworld'
-        });
-
-        console.log('Connected to Minecraft Server');
-
         setInterval(async () => {
             try {
+                const rcon = await Rcon.connect({
+                    host: "3.97.180.236",
+                    port: 25575,
+                    password: 'zaphhomesteadworld'
+                });
+
+                console.log(`mcListener.js: RCON Connected`);
                 const res = await rcon.send('/list');
                 const match = res.match(/There are \d+ of a max of \d+ players online: (.*)/);
                 let players = [];
@@ -49,6 +48,9 @@ module.exports = {
                 });
 
                 checked_players = players;
+
+                rcon.end();
+
             } catch (err) {
                 console.error('Error Polling RCON:', err);
             }
