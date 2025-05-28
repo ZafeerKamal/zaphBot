@@ -8,7 +8,7 @@ module.exports = {
     async execute(interaction) {
         
         const rcon = await Rcon.connect({
-            host: 'localhost',
+            host: "3.97.180.236",
             port: 25575,
             password: 'zaphhomesteadworld'
         });

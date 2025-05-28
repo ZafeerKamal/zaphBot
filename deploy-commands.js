@@ -1,5 +1,5 @@
 const { REST, Routes } = require('discord.js');
-const { clientId, zaphGuildId, RCFguildId, token, reloadCommandId } = require('./config.json');
+const { clientId, zaphGuildId, RCFguildId, token } = require('./config.json');
 const fs = require('node:fs');
 const path = require('node:path');
 const fivestack = require('./commands/utility/fivestack');
