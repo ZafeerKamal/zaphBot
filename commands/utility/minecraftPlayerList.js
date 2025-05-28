@@ -1,16 +1,33 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('@discordjs/builders');
 const { Rcon } = require('rcon-client');
+const { EC2Client, DescribeInstancesCommand } = require("@aws-sdk/client-ec2");
+const { awsAccessKeyId, awsSecretAccessKey, awsInstanceId } = require('./../../config.json');
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('playerlist')
         .setDescription('Displays the current players on the Minecraft Server'),
+
     async execute(interaction) {
-        await interaction.deferReply();
+
+        const ec2client = new EC2Client({
+            region: 'ca-central-1',
+            credentials: {
+                accessKeyId: awsAccessKeyId,
+                secretAccessKey: awsSecretAccessKey
+            }
+        });
 
         try {
-            let initialEmbed = initialEmbedCreate();
-            await interaction.editReply({ embeds: [initialEmbed] });
+            const command = new DescribeInstancesCommand({ InstanceIds: [awsInstanceId]});
+            const resp = await ec2client.send(command);
+            const status = resp.Reservations[0].Instances[0].State.Name;
+            console.log(`minecraftPlayerList.js: Status: ${status}`);
+
+            if (status != 'running') {
+                let failedEmbed = failedEmbedCreate(status);
+                return await interaction.reply({ embeds: [failedEmbed] });
+            }
 
             const rcon = await Rcon.connect({
                 host: "3.97.180.236",
@@ -29,14 +46,15 @@ module.exports = {
             console.log(`minecraftPlayerList.js: Players: ${players}`);
 
             let msgEmbed = playerList(players);
-            await interaction.editReply({ embeds: [msgEmbed] });
+            await interaction.reply({ embeds: [msgEmbed] });
 
             rcon.end();
+
         } catch (err) {
-            console.error('minecraftPlayerList.js Error: ', err);
+            console.error('minecraftPlayerList.js: Error getting status:', err);
             console.log('minecraftPlayerList.js: Could not connect to Minecraft Server ');
-            let failEmbed = failedEmbed();
-            await interaction.editReply({ embeds: [failEmbed] });
+            let embed2 = NoStatusEmbed();
+            await interaction.reply({ embeds: [embed2] });
         }
     },
 };
@@ -56,22 +74,21 @@ function playerList(players) {
             embed.addFields({name: `${players[i]}`, value: ''});
         }
     }
-
     return embed;
 }
 
-function failedEmbed() {
+function failedEmbedCreate(status) {
     let embed = new EmbedBuilder()
         .setColor(0x720707)
         .setTitle('Failed to connect to Minecraft Server.')
-        .setDescription('Check if instance is running (/serverstatus). Use /startserver if instance is stopped');
+        .setDescription(`Check if instance is running (/serverstatus). Use /startserver if instance is stopped. Current Instance Status: ${status}`);
     return embed;
 }
 
-function initialEmbedCreate() {
+function NoStatusEmbed() {
     let embed = new EmbedBuilder()
-        .setColor(0x0099FF)
-        .setTitle('Connecting to Minecraft server')
-        .setDescription('Check if instance is running (/serverstatus). Use /startserver if instance is stopped');
+        .setColor(0x720707)
+        .setTitle('Failed to connect to Minecraft Server.')
+        .setDescription(`Check if instance is running (/serverstatus). Use /startserver if instance is stopped.`);
     return embed;
 }
