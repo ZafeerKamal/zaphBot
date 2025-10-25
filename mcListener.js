@@ -1,5 +1,5 @@
 const { Rcon } = require('rcon-client');
-const { rcfMcChannelId, zaphMcChannelId, awsAccessKeyId, awsSecretAccessKey, awsInstanceId } = require('./config.json');
+const { rcfMcChannelId, zaphMcChannelId, awsAccessKeyId, awsSecretAccessKey, awsInstanceId, mcIp } = require('./config.json');
 const { EmbedBuilder } = require('discord.js');
 const { EC2Client, StopInstancesCommand } = require("@aws-sdk/client-ec2");
 
@@ -19,11 +19,10 @@ module.exports = {
         setInterval(async () => {
             try {
                 const rcon = await Rcon.connect({
-                    host: "3.97.180.236",
+                    host: mcIp,
                     port: 25575,
                     password: 'zaphhomesteadworld'
                 });
-                console.log(`mcListener.js: RCON Connected`);
 
                 const res = await rcon.send('/list');
                 const match = res.match(/There are \d+ of a max of \d+ players online: (.*)/);
@@ -64,7 +63,7 @@ module.exports = {
                     if (afkMinutes > 30) {
                         console.log(`mcListener.js: Shutting down EC2 instance due to inactivity`);
                         const ec2Client = new EC2Client({
-                            region: 'ca-central-1',
+                            region: 'us-east-1',
                             credentials: {
                                 accessKeyId: awsAccessKeyId,
                                 secretAccessKey: awsSecretAccessKey

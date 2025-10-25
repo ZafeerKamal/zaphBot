@@ -9,7 +9,7 @@ module.exports = {
     async execute(interaction) {
         
         const ec2client = new EC2Client({
-            region: 'ca-central-1',
+            region: 'us-east-1',
             credentials: {
                 accessKeyId: awsAccessKeyId,
                 secretAccessKey: awsSecretAccessKey

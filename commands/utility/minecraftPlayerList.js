@@ -1,7 +1,7 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('@discordjs/builders');
 const { Rcon } = require('rcon-client');
 const { EC2Client, DescribeInstancesCommand } = require("@aws-sdk/client-ec2");
-const { awsAccessKeyId, awsSecretAccessKey, awsInstanceId } = require('./../../config.json');
+const { awsAccessKeyId, awsSecretAccessKey, awsInstanceId, mcIp } = require('./../../config.json');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -11,7 +11,7 @@ module.exports = {
     async execute(interaction) {
 
         const ec2client = new EC2Client({
-            region: 'ca-central-1',
+            region: 'us-east-1',
             credentials: {
                 accessKeyId: awsAccessKeyId,
                 secretAccessKey: awsSecretAccessKey
@@ -30,7 +30,7 @@ module.exports = {
             }
 
             const rcon = await Rcon.connect({
-                host: "3.97.180.236",
+                host: mcIp,
                 port: 25575,
                 password: 'zaphhomesteadworld'
             });
