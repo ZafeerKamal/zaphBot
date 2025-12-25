@@ -1,6 +1,5 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { EC2Client, StartInstancesCommand } = require("@aws-sdk/client-ec2");
-const { awsAccessKeyId, awsSecretAccessKey, awsInstanceId } = require('./../../config.json');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -9,15 +8,15 @@ module.exports = {
     async execute(interaction) {
         
         const ec2client = new EC2Client({
-            region: 'us-east-1',
+            region: process.env.AWS_REGION,
             credentials: {
-                accessKeyId: awsAccessKeyId,
-                secretAccessKey: awsSecretAccessKey
+                accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+                secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
             }
         });
 
         try {
-            const command = new StartInstancesCommand({ InstanceIds: [awsInstanceId] });
+            const command = new StartInstancesCommand({ InstanceIds: [process.env.AWS_INSTANCE_ID] });
             const resp = await ec2client.send(command);
             const state = resp.StartingInstances[0].CurrentState.Name;
             console.log(`startserver.js: State: ${state}`);
@@ -26,6 +25,5 @@ module.exports = {
             console.error('Error Starting instance:', err);
             interaction.reply('Error Starting instance');
         }
-        
     },
 };

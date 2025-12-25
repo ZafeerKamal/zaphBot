@@ -1,6 +1,5 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { EC2Client, DescribeInstancesCommand } = require("@aws-sdk/client-ec2");
-const { awsAccessKeyId, awsSecretAccessKey, awsInstanceId } = require('./../../config.json');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -9,15 +8,15 @@ module.exports = {
     async execute(interaction) {
         
         const ec2client = new EC2Client({
-            region: 'us-east-1',
+            region: process.env.AWS_REGION,
             credentials: {
-                accessKeyId: awsAccessKeyId,
-                secretAccessKey: awsSecretAccessKey
+                accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+                secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
             }
         });
-        
+
         try {
-            const command = new DescribeInstancesCommand({ InstanceIds: [awsInstanceId]});
+            const command = new DescribeInstancesCommand({ InstanceIds: [process.env.AWS_INSTANCE_ID]});
             const resp = await ec2client.send(command);
             const status = resp.Reservations[0].Instances[0].State.Name;
             console.log(`serverStatus.js: Status: ${status}`);

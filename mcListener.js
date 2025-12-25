@@ -1,27 +1,25 @@
 const { Rcon } = require('rcon-client');
-const { rcfMcChannelId, zaphMcChannelId, awsAccessKeyId, awsSecretAccessKey, awsInstanceId, mcIp } = require('./config.json');
 const { EmbedBuilder } = require('discord.js');
 const { EC2Client, StopInstancesCommand } = require("@aws-sdk/client-ec2");
 
 let checked_players = [];
-let channelId = rcfMcChannelId; // The channel to send updates to
 let afkTime = null; // Time since 0 players on the server
 
 module.exports = {
     async mcListenerStart(discordClient) {
         let channel;
         try {
-            channel = await discordClient.channels.fetch(channelId);
+            channel = await discordClient.channels.fetch(process.env.MINECRAFT_LOG_ID);
         } catch (err) {
-            console.error('Failed to fetch channel', err);
+            console.error('mcListener.js: Failed to fetch channel', err);
         }
 
         setInterval(async () => {
             try {
                 const rcon = await Rcon.connect({
-                    host: mcIp,
-                    port: 25575,
-                    password: 'zaphhomesteadworld'
+                    host: process.env.MINECRAFT_IP,
+                    port: process.env.MINECRAFT_PORT,
+                    password: process.env.MINECRAFT_RCON_PASSWORD
                 });
 
                 const res = await rcon.send('/list');
@@ -63,13 +61,13 @@ module.exports = {
                     if (afkMinutes > 30) {
                         console.log(`mcListener.js: Shutting down EC2 instance due to inactivity`);
                         const ec2Client = new EC2Client({
-                            region: 'us-east-1',
+                            region: process.env.AWS_REGION,
                             credentials: {
-                                accessKeyId: awsAccessKeyId,
-                                secretAccessKey: awsSecretAccessKey
+                                accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+                                secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
                             }
                         });
-                        await ec2Client.send(new StopInstancesCommand({ InstanceIds: [awsInstanceId] }));
+                        await ec2Client.send(new StopInstancesCommand({ InstanceIds: [process.env.AWS_INSTANCE_ID] }));
 
                         afkEmbed = inactivity();
                         channel.send({ embeds: [afkEmbed] });
@@ -77,7 +75,7 @@ module.exports = {
                     }
                 }
             } catch (err) {
-                console.error('Error Polling RCON:', err);
+                console.error('mcListener.js: Error Polling RCON:', err);
                 afkTime = null;
             }
         }, 10000);

@@ -1,7 +1,8 @@
+require('dotenv').config();
+
 const fs = require('node:fs');
 const path = require('node:path');
-const { Client, Collection, Events, GatewayIntentBits  } = require('discord.js');
-const config = require('./config.json');
+const { Client, Collection, GatewayIntentBits  } = require('discord.js');
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });
 
@@ -12,7 +13,7 @@ const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBit
 client.commands = new Collection();
 
 const foldersPath = path.join(__dirname, 'commands');
-const commandFolders = fs.readdirSync(foldersPath)
+const commandFolders = fs.readdirSync(foldersPath);
 
 for (const folder of commandFolders) {
     const commandsPath = path.join(foldersPath, folder);
@@ -46,7 +47,8 @@ for (const file of eventFiles) {
         client.on(event.name, (...args) => event.execute(...args));
     }
 }
+console.log(`Event Files: ${eventFiles}`);
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////// Start //////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
-client.login(config.token);
+client.login(process.env.DISCORD_TOKEN);

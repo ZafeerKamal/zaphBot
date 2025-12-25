@@ -1,7 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('@discordjs/builders');
 const { Rcon } = require('rcon-client');
 const { EC2Client, DescribeInstancesCommand } = require("@aws-sdk/client-ec2");
-const { awsAccessKeyId, awsSecretAccessKey, awsInstanceId, mcIp } = require('./../../config.json');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -11,15 +10,15 @@ module.exports = {
     async execute(interaction) {
 
         const ec2client = new EC2Client({
-            region: 'us-east-1',
+            region: process.env.AWS_REGION,
             credentials: {
-                accessKeyId: awsAccessKeyId,
-                secretAccessKey: awsSecretAccessKey
+                accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+                secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
             }
         });
 
         try {
-            const command = new DescribeInstancesCommand({ InstanceIds: [awsInstanceId]});
+            const command = new DescribeInstancesCommand({ InstanceIds: [process.env.AWS_INSTANCE_ID]});
             const resp = await ec2client.send(command);
             const status = resp.Reservations[0].Instances[0].State.Name;
             console.log(`minecraftPlayerList.js: Status: ${status}`);
@@ -30,9 +29,9 @@ module.exports = {
             }
 
             const rcon = await Rcon.connect({
-                host: mcIp,
-                port: 25575,
-                password: 'zaphhomesteadworld'
+                host: process.env.MINECRAFT_IP,
+                port: process.env.MINECRAFT_PORT,
+                password: process.env.MINECRAFT_RCON_PASSWORD
             });
             console.log('minecraftPlayerList.js: Connected to Minecraft Server ');
 

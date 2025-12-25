@@ -1,10 +1,6 @@
 const { REST, Routes } = require('discord.js');
-const { clientId, zaphGuildId, RCFguildId, token } = require('./config.json');
 const fs = require('node:fs');
 const path = require('node:path');
-const fivestack = require('./commands/utility/fivestack');
-
-let guildId = RCFguildId; //Server (Guild) to update commands for
 
 const commands = [];
 const foldersPath = path.join(__dirname, 'commands');
@@ -24,23 +20,22 @@ for (const folder of commandFolders) {
 	}
 }
 
-const rest = new REST().setToken(token);
+const rest = new REST().setToken(process.env.DISCORD_TOKEN);
 
 (async () => {
 	try {
 		console.log(`Started refreshing ${commands.length} application (/) commands.`);
-
 		// Update Guild Commands
-		const data = await rest.put(
-			Routes.applicationGuildCommands(clientId, guildId),
-			{ body: commands },
-		);
-
-        //Global Commands
-        // const data = await rest.put(
-		// 	Routes.applicationCommands(clientId),
+		// const data = await rest.put(
+		// 	Routes.applicationGuildCommands(process.env.DISCORD_CLIENT_ID, process.env.ZAPH_GUILD_ID),
 		// 	{ body: commands },
 		// );
+
+        //Global Commands
+        const data = await rest.put(
+			Routes.applicationCommands(process.env.DISCORD_CLIENT_ID),
+			{ body: commands },
+		);
 
 		console.log(`Successfully reloaded ${data.length} application (/) commands.`);
 	} catch (error) {
