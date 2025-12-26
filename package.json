@@ -1,0 +1,25 @@
+{
+  "dependencies": {
+    "@aws-sdk/client-ec2": "^3.818.0",
+    "discord.js": "14.19.3",
+    "dotenv": "^17.2.3",
+    "rcon-client": "^4.2.5"
+  },
+  "name": "zaphbot",
+  "version": "1.2.0",
+  "description": "Discord Bot",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ZafeerKamal/zaphBot.git"
+  },
+  "author": "zaph",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ZafeerKamal/zaphBot/issues"
+  },
+  "homepage": "https://github.com/ZafeerKamal/zaphBot#readme"
+}
